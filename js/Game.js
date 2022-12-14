@@ -7,8 +7,9 @@ class Game {
     this.leader2 = createElement("h2");
     this.playerMoving = false;
     this.leftKeyActive = false;
+    
     //Crie propriedade para explosão
-
+    this.blast = false;
   }
 
   getState() {
@@ -177,13 +178,16 @@ class Game {
           this.handlePowerCoins(index);
           this.handleObstacleCollision(index); 
           //Chamar método collision car a e b - ATV ADICIONAL
-          //this.handleCarACollisionWithCarB(index);
+          this.handleCarACollisionWithCarB(index);
 
           if (player.life <= 0) {
             //Altere blast para true
+            this.blast = true
             this.playerMoving = false;
             //Altere estado do jogo
+            gameState = 2;
             //Chame função end()
+            this.end();
           }
 
           // Altere a posição da câmera na direção y
@@ -324,25 +328,27 @@ class Game {
 
   handlePlayerControls() {
     //ATIVE CONTROLE SOMENTE DE BLAST FOR FALSO
+      if (this.blast){
+        if (keyIsDown(UP_ARROW)) {
+          this.playerMoving = true;
+          player.positionY += 10;
+          player.update();
+        }
+  
+        if (keyIsDown(LEFT_ARROW) && player.positionX > width / 3 - 50) {
+          this.leftKeyActive = true;
+          player.positionX -= 5;
+          player.update();
+        }
+  
+        if (keyIsDown(RIGHT_ARROW) && player.positionX < width / 2 + 300) {
+          this.leftKeyActive = false;
+          player.positionX += 5;
+          player.update();
+        }
+        ;
+      }
       
-      if (keyIsDown(UP_ARROW)) {
-        this.playerMoving = true;
-        player.positionY += 10;
-        player.update();
-      }
-
-      if (keyIsDown(LEFT_ARROW) && player.positionX > width / 3 - 50) {
-        this.leftKeyActive = true;
-        player.positionX -= 5;
-        player.update();
-      }
-
-      if (keyIsDown(RIGHT_ARROW) && player.positionX < width / 2 + 300) {
-        this.leftKeyActive = false;
-        player.positionX += 5;
-        player.update();
-      }
-      ;
   }
   //C41 //SA
   handleObstacleCollision(index) {
@@ -366,7 +372,7 @@ class Game {
   }
 
   //ATIVIDADE ADICIONAL
- /* handleCarACollisionWithCarB(index) {
+     handleCarACollisionWithCarB(index) {
     if(index === 1){
       if (cars[index - 1].collide(cars[1])){
         if (this.leftKeyActive){ 
@@ -384,9 +390,21 @@ class Game {
   }
 
   if(index === 2){
-   
+    if (cars[index - 1].collide(cars[0])){
+      if (this.leftKeyActive){ 
+      player.positionX += 100;
+    } else {
+      player.positionX -= 100;
+    }
+
+    if (player.life > 0) {
+      player.life -= 185 / 4;
+    }
+
+    player.update();
+  } 
   }
-}*/
+}
 
   showRank() {
     swal({
@@ -414,12 +432,12 @@ class Game {
   //Método end
   end() {
     swal({
-      title: ` `,
-      text: "  ",
+      title: ` ta vendo foi bobo `,
+      text: " não erra dnv!! ",
       imageUrl:
         "https://www.pngmart.com/files/15/Comic-Explosion-Bubble-PNG-HD.png",
       imageSize: "200x200",
-      confirmButtonText: "  "
+      confirmButtonText: " vai la  "
     })
   }
   
